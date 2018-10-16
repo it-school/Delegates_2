@@ -128,12 +128,39 @@ namespace Delegates_2
         static void Main()
         {
             Console.WriteLine("Пример работы Делегата");
-            Firm firm = new Firm();
-            // В этой строке происходит использование делегатов. Создаётся объект // делегата используя ключевое слово new.
-            // Сейчас делегат указывает на метод AnalyzeSex
-            firm.AnalyzePeople(new Human.HumanDelegate(AnalyzeSex));
-            // Сейчас делегат указывает на метод AnalyzeAge
-            firm.AnalyzePeople(new Human.HumanDelegate(AnalyzeAge));
+            Firm firm = new Firm(); // В этой строке происходит использование делегатов. Создаётся объект // делегата используя ключевое слово new.
+            
+            firm.AnalyzePeople(new Human.HumanDelegate(AnalyzeSex)); // Сейчас делегат указывает на метод AnalyzeSex
+            firm.AnalyzePeople(new Human.HumanDelegate(AnalyzeAge)); // Сейчас делегат указывает на метод AnalyzeAge
+            Console.Read();
+
+            // -----------------
+            Console.WriteLine("Пример работы Делегата");
+            // Создание делегатов
+            Human.HumanDelegate sex = new Human.HumanDelegate(AnalyzeSex);
+            Human.HumanDelegate age = new Human.HumanDelegate(AnalyzeAge);
+
+            // Многоадресный Делегат (формируем его через +)
+            // Произойдет вызов методов AnalyzeSex и AnalyzeAge
+            firm.AnalyzePeople(sex + age);
+            Console.WriteLine("\n\n");
+            // Многоадресный Делегат (формируем его через +)
+            // Произойдет вызов методов AnalyzeSex и AnalyzeAge
+            firm.AnalyzePeople(age + sex);
+
+            // Или так тоже Многоадресный Делегат
+            Console.WriteLine("\n\n");
+            // Многоадресный Делегат (формируем его через Combine)
+            // Произойдет вызов методов AnalyzeSex и AnalyzeAge
+            firm.AnalyzePeople((Human.HumanDelegate)Delegate.Combine(sex, age));
+            // Или так тоже можно
+            MulticastDelegate del = age + sex;
+            firm.AnalyzePeople((Human.HumanDelegate)del);
+            // Удаляем один делегат
+            Delegate onlysex = MulticastDelegate.Remove(del, age);
+            Console.WriteLine("\n\n************************************\n\n");
+            // Уже не многоадресный делегат
+            firm.AnalyzePeople((Human.HumanDelegate)onlysex);
             Console.Read();
         }
     }
